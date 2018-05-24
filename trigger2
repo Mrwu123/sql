@@ -1,0 +1,47 @@
+
+IF(OBJECT_ID('sc_grade') is not null)        -- 判断名为 Student_Count 的触发器是否存在
+
+
+
+DROP TRIGGER sc_grade       -- 删除触发器
+
+
+
+GO
+
+CREATE TRIGGER sc_grade
+
+ON sc  	         
+
+AFTER
+
+UPDATE
+
+AS 
+
+	declare @UserName    nchar(10)
+
+	declare @DateTime    datetime
+
+	declare @studentname nchar(10)
+
+	declare @oldgrade smallint
+
+	declare @newgrade smallint
+
+
+
+	select @UserName = system_user
+
+	select @DateTime = CONVERT(datetime,GETDATE(),120)
+	
+	select @studentname= sno from sc 
+
+	select @oldgrade = grade from deleted 
+
+	select @newgrade = grade from inserted 
+	
+	if(@newgrade>=1.1 *@oldgrade)
+	INSERT INTO grade(username,datetime,studentname,oldgrade,newgrade)
+	VALUES (@UserName,@DateTime,@studentname,@oldgrade,@newgrade)
+	
