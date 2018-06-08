@@ -1,0 +1,27 @@
+CREATE PROCEDURE Proc_TRANSFER 
+@teacherin1 char(10),@teacherMM2  char(10),@amount FLOAT
+ /*定义存储过程TRANSFER，参数为教师表中的教师号、教师密码表中的教师号、转账额度*/
+AS
+BEGIN TRANSACTION TRANS   
+   	DECLARE		/*定义变量*/
+	@teacherout char(10),
+	@teacherin char(10),
+	@inAccountnum INT;
+	 /*检查教师表中是否有教师号 */     
+	SELECT @teacherout = tsno FROM teacher	;
+	/*如果转出账户不存在或账户中没有存款*/
+	IF @teacherout IS NULL               	   
+		BEGIN
+			PRINT '不是本校老师不能注册'
+			ROLLBACK TRANSACTION TRANS; 	   /*回滚事务*/
+			RETURN;
+		END;
+	/*如果账户存款不足*/
+
+	/*如果条件都没有异常，开始注册。*/ 
+	BEGIN
+		INSERT INTO TeaMMB(ID,Password) VALUES(@teacherin1,@teacherMM2)
+		PRINT '转账完成，请取走银行卡'
+		COMMIT TRANSACTION TRANS;                       	/* 提交转账事务 */
+		RETURN;
+	END
